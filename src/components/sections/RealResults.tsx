@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { ChevronLeft, ChevronRight, Smile, Hand, CircleDot } from "lucide-react";
 
@@ -55,10 +55,117 @@ const categories: Category[] = [
   },
 ];
 
+interface BeforeAfterSliderProps {
+  beforeImage: string;
+  afterImage: string;
+  language: string;
+}
+
+const BeforeAfterSlider = ({ beforeImage, afterImage, language }: BeforeAfterSliderProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+  
+  // Motion value for slider position (in pixels from left)
+  const sliderX = useMotionValue(0);
+  
+  // Transform to percentage for the clip width
+  const clipWidth = useTransform(sliderX, (x) => {
+    if (containerWidth === 0) return 50;
+    return ((x + containerWidth / 2) / containerWidth) * 100;
+  });
+
+  // Update container width on mount and resize
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+    
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
+  // Reset slider position when container width changes
+  useEffect(() => {
+    sliderX.set(0);
+  }, [containerWidth, sliderX]);
+
+  const dragConstraints = containerWidth > 0 
+    ? { left: -containerWidth / 2, right: containerWidth / 2 }
+    : { left: 0, right: 0 };
+
+  return (
+    <div 
+      ref={containerRef}
+      className="relative aspect-[4/3] overflow-hidden cursor-ew-resize select-none"
+    >
+      {/* Before Image (Bottom Layer - Full Width) */}
+      <div className="absolute inset-0">
+        <img
+          src={beforeImage}
+          alt="Before"
+          className="w-full h-full object-cover pointer-events-none"
+          draggable={false}
+        />
+        {/* Before Label */}
+        <span className="absolute top-4 left-4 bg-primary text-primary-foreground px-3 py-1.5 text-xs font-bold uppercase tracking-widest shadow-lg z-10">
+          {language === "en" ? "Before" : "قبل"}
+        </span>
+      </div>
+
+      {/* After Image (Top Layer - Clipped) */}
+      <motion.div 
+        className="absolute inset-0 overflow-hidden"
+        style={{ 
+          clipPath: useTransform(clipWidth, (w) => `inset(0 0 0 ${w}%)`)
+        }}
+      >
+        <img
+          src={afterImage}
+          alt="After"
+          className="w-full h-full object-cover pointer-events-none"
+          draggable={false}
+        />
+        {/* After Label */}
+        <span className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1.5 text-xs font-bold uppercase tracking-widest shadow-lg z-10">
+          {language === "en" ? "After" : "بعد"}
+        </span>
+      </motion.div>
+
+      {/* Draggable Handle */}
+      <motion.div
+        drag="x"
+        dragConstraints={dragConstraints}
+        dragElastic={0}
+        dragMomentum={false}
+        style={{ x: sliderX }}
+        className="absolute top-0 bottom-0 left-1/2 z-20 flex items-center justify-center cursor-grab active:cursor-grabbing touch-none"
+      >
+        {/* Vertical Line */}
+        <div className="absolute inset-y-0 w-0.5 bg-primary shadow-[0_0_10px_rgba(234,179,8,0.5)]" />
+        
+        {/* Handle Button */}
+        <div className="relative w-12 h-12 rounded-full bg-white shadow-xl border-2 border-primary flex items-center justify-center">
+          <div className="flex items-center gap-0.5">
+            <ChevronLeft className="w-4 h-4 text-primary" />
+            <ChevronRight className="w-4 h-4 text-primary" />
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Instructions Hint */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm text-white/80 text-xs px-3 py-1.5 rounded-full pointer-events-none">
+        {language === "en" ? "Drag to compare" : "اسحب للمقارنة"}
+      </div>
+    </div>
+  );
+};
+
 const RealResults = () => {
   const { language, isRTL } = useLanguage();
   const [activeCategory, setActiveCategory] = useState(categories[0]);
-  const [imageIndex, setImageIndex] = useState(0);
 
   const handlePrev = () => {
     const currentIndex = categories.findIndex(c => c.id === activeCategory.id);
@@ -94,7 +201,7 @@ const RealResults = () => {
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          {/* Left: Before/After Display */}
+          {/* Left: Before/After Slider */}
           <motion.div
             initial={{ opacity: 0, x: isRTL ? 50 : -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -103,61 +210,33 @@ const RealResults = () => {
             className="relative"
           >
             <div className="relative bg-white rounded-xl overflow-hidden shadow-2xl">
-              {/* Images Container */}
-              <div className="relative aspect-[4/3]">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeCategory.id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute inset-0 grid grid-cols-2"
-                  >
-                    {/* Before Image */}
-                    <div className="relative">
-                      <img
-                        src={activeCategory.beforeImage}
-                        alt="Before"
-                        className="w-full h-full object-cover"
-                      />
-                      <span className="absolute top-4 left-4 bg-primary text-primary-foreground px-3 py-1 text-sm font-bold uppercase tracking-wider">
-                        {language === "en" ? "Before" : "قبل"}
-                      </span>
-                    </div>
-                    {/* After Image */}
-                    <div className="relative">
-                      <img
-                        src={activeCategory.afterImage}
-                        alt="After"
-                        className="w-full h-full object-cover"
-                      />
-                      <span className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 text-sm font-bold uppercase tracking-wider">
-                        {language === "en" ? "After" : "بعد"}
-                      </span>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Divider Line */}
-                <div className="absolute inset-y-0 left-1/2 w-0.5 bg-primary -translate-x-1/2 z-10">
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center">
-                    <ChevronLeft className="w-4 h-4 text-navy-dark" />
-                    <ChevronRight className="w-4 h-4 text-navy-dark" />
-                  </div>
-                </div>
-              </div>
+              {/* Before/After Slider with AnimatePresence for category changes */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeCategory.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <BeforeAfterSlider
+                    beforeImage={activeCategory.beforeImage}
+                    afterImage={activeCategory.afterImage}
+                    language={language}
+                  />
+                </motion.div>
+              </AnimatePresence>
 
               {/* Navigation Arrows */}
               <button
                 onClick={handlePrev}
-                className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 rounded-full shadow-lg flex items-center justify-center hover:bg-white transition-colors z-20"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 rounded-full shadow-lg flex items-center justify-center hover:bg-white transition-colors z-30"
               >
                 <ChevronLeft className="w-5 h-5 text-primary" />
               </button>
               <button
                 onClick={handleNext}
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 rounded-full shadow-lg flex items-center justify-center hover:bg-white transition-colors z-20"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 rounded-full shadow-lg flex items-center justify-center hover:bg-white transition-colors z-30"
               >
                 <ChevronRight className="w-5 h-5 text-primary" />
               </button>
@@ -165,14 +244,14 @@ const RealResults = () => {
 
             {/* Pagination Dots */}
             <div className="flex justify-center gap-2 mt-4">
-              {categories.map((cat, index) => (
+              {categories.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat)}
-                  className={`w-2 h-2 rounded-full transition-all ${
+                  className={`h-2 rounded-full transition-all duration-300 ${
                     activeCategory.id === cat.id
                       ? "w-8 bg-primary"
-                      : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                      : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
                   }`}
                 />
               ))}
