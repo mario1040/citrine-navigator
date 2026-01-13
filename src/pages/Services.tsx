@@ -1,76 +1,43 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/context/LanguageContext";
-import { Scissors, Sparkles, SmilePlus, ArrowRight, ArrowLeft, Calendar } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import PaymentModal from "@/components/payment/PaymentModal";
-
-interface ServiceItem {
-  id: string;
-  name: string;
-  nameAr: string;
-  price: number;
-}
+import { Scissors, Sparkles, SmilePlus, ArrowRight, ArrowLeft } from "lucide-react";
 
 const Services = () => {
-  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const { t, language, isRTL } = useLanguage();
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
   const services = [
     {
-      id: 'plastic-surgery',
       icon: Scissors,
       title: t.services.plasticSurgery.title,
-      titleAr: 'جراحة التجميل',
       description: t.services.plasticSurgery.description,
       href: "/services/plastic-surgery",
-      price: 15000,
       procedures: language === "en" 
         ? ["Rhinoplasty", "Facelift", "Liposuction", "Breast Surgery", "Tummy Tuck"]
         : ["تجميل الأنف", "شد الوجه", "شفط الدهون", "جراحة الثدي", "شد البطن"],
     },
     {
-      id: 'dermatology',
       icon: Sparkles,
       title: t.services.dermatology.title,
-      titleAr: 'الأمراض الجلدية',
       description: t.services.dermatology.description,
       href: "/services/dermatology",
-      price: 2500,
       procedures: language === "en" 
         ? ["Botox & Fillers", "Chemical Peels", "Laser Treatments", "Acne Treatment", "Skin Rejuvenation"]
         : ["البوتوكس والفيلر", "التقشير الكيميائي", "علاجات الليزر", "علاج حب الشباب", "تجديد البشرة"],
     },
     {
-      id: 'dental',
       icon: SmilePlus,
       title: t.services.dental.title,
-      titleAr: 'طب الأسنان',
       description: t.services.dental.description,
       href: "/services/dental",
-      price: 3500,
       procedures: language === "en" 
         ? ["Dental Implants", "Veneers", "Teeth Whitening", "Orthodontics", "Root Canal"]
         : ["زراعة الأسنان", "القشور", "تبييض الأسنان", "تقويم الأسنان", "علاج الجذور"],
     },
   ];
-
-  const handleBookNow = (service: typeof services[0], e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setSelectedService({
-      id: service.id,
-      name: service.title,
-      nameAr: service.titleAr,
-      price: service.price,
-    });
-    setPaymentModalOpen(true);
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -119,14 +86,9 @@ const Services = () => {
 
                     {/* Content */}
                     <div className="flex-1">
-                      <div className="flex flex-wrap items-center gap-3 mb-2">
-                        <h2 className="text-2xl font-serif font-semibold text-foreground group-hover:text-primary transition-colors">
-                          {service.title}
-                        </h2>
-                        <span className="px-3 py-1 text-sm font-semibold bg-primary/20 text-primary rounded-full">
-                          {language === 'ar' ? 'من' : 'From'} {service.price.toLocaleString()} {language === 'ar' ? 'ج.م' : 'EGP'}
-                        </span>
-                      </div>
+                      <h2 className="text-2xl font-serif font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                        {service.title}
+                      </h2>
                       <p className="text-foreground/60 mb-4">
                         {service.description}
                       </p>
@@ -142,21 +104,12 @@ const Services = () => {
                       </div>
                     </div>
 
-                    {/* Actions */}
-                    <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0">
-                      <Button
-                        onClick={(e) => handleBookNow(service, e)}
-                        className="luxury-button"
-                      >
-                        <Calendar className="w-4 h-4 mr-2" />
-                        {language === 'ar' ? 'احجز الآن' : 'Book Now'}
-                      </Button>
-                      <div className="flex items-center gap-2 text-primary justify-center">
-                        <span className="text-sm font-medium">
-                          {t.services.learnMore}
-                        </span>
-                        <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-                      </div>
+                    {/* Arrow */}
+                    <div className="flex items-center gap-2 text-primary">
+                      <span className="hidden lg:inline text-sm font-medium">
+                        {t.services.learnMore}
+                      </span>
+                      <ArrowIcon className="w-5 h-5 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
                     </div>
                   </div>
                 </Link>
@@ -167,15 +120,6 @@ const Services = () => {
       </section>
 
       <Footer />
-
-      {/* Payment Modal */}
-      {selectedService && (
-        <PaymentModal
-          isOpen={paymentModalOpen}
-          onClose={() => setPaymentModalOpen(false)}
-          service={selectedService}
-        />
-      )}
     </div>
   );
 };
