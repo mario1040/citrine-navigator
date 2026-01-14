@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/context/LanguageContext";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import ServiceCard from "@/components/services/ServiceCard";
 
 const PlasticSurgery = () => {
   const { language, isRTL, t } = useLanguage();
@@ -15,30 +16,48 @@ const PlasticSurgery = () => {
       description: language === "en" 
         ? "Reshape and refine your nose for natural, harmonious results."
         : "إعادة تشكيل وتحسين أنفك للحصول على نتائج طبيعية ومتناغمة.",
+      image: "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
     {
       name: language === "en" ? "Facelift" : "شد الوجه",
       description: language === "en" 
         ? "Turn back the clock with our advanced facial rejuvenation techniques."
         : "ارجع بالزمن مع تقنيات تجديد الوجه المتقدمة لدينا.",
+      image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
     {
       name: language === "en" ? "Liposuction" : "شفط الدهون",
       description: language === "en" 
         ? "Sculpt your body with precise fat removal and contouring."
         : "نحت جسمك بإزالة الدهون والتحديد الدقيق.",
+      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
     {
       name: language === "en" ? "Breast Surgery" : "جراحة الثدي",
       description: language === "en" 
         ? "Augmentation, reduction, and lift procedures for your ideal silhouette."
         : "إجراءات التكبير والتصغير والشد للحصول على صورتك المثالية.",
+      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
     {
       name: language === "en" ? "Tummy Tuck" : "شد البطن",
       description: language === "en" 
         ? "Achieve a flatter, more toned abdomen with abdominoplasty."
         : "احصل على بطن مسطح ومشدود مع شد البطن.",
+      image: "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    },
+    {
+      name: language === "en" ? "Blepharoplasty" : "جراحة الجفون",
+      description: language === "en" 
+        ? "Rejuvenate your eyes with eyelid surgery for a refreshed look."
+        : "جدد عينيك مع جراحة الجفون للحصول على مظهر منتعش.",
+      image: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
   ];
 
@@ -74,36 +93,21 @@ const PlasticSurgery = () => {
         </div>
       </section>
 
-      {/* Procedures */}
+      {/* Service Cards Grid */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-serif font-bold mb-8">
             {language === "en" ? "Our Procedures" : "إجراءاتنا"}
           </h2>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {procedures.map((procedure, index) => (
-              <motion.div
+              <ServiceCard
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="luxury-card p-6"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Check className="w-4 h-4 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground mb-2">
-                      {procedure.name}
-                    </h3>
-                    <p className="text-sm text-foreground/60">
-                      {procedure.description}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
+                title={procedure.name}
+                description={procedure.description}
+                image={procedure.image}
+                videoUrl={procedure.videoUrl}
+              />
             ))}
           </div>
         </div>
