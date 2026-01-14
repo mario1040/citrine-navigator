@@ -140,7 +140,7 @@ const BeforeAfterSlider = ({ beforeImage, afterImage, language }: BeforeAfterSli
         dragConstraints={dragConstraints}
         dragElastic={0}
         dragMomentum={false}
-        style={{ x: sliderX }}
+        style={{ x: sliderX, translateX: "-50%" }}
         className="absolute top-0 bottom-0 left-1/2 z-20 flex items-center justify-center cursor-grab active:cursor-grabbing touch-none"
       >
         {/* Vertical Line */}
