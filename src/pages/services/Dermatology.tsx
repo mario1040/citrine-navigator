@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/context/LanguageContext";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import ServiceCard from "@/components/services/ServiceCard";
 
 const Dermatology = () => {
   const { language, isRTL, t } = useLanguage();
@@ -15,30 +16,48 @@ const Dermatology = () => {
       description: language === "en" 
         ? "Smooth wrinkles and restore volume with our premium injectables."
         : "تنعيم التجاعيد واستعادة الحجم مع حقننا الفاخرة.",
+      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
     {
       name: language === "en" ? "Chemical Peels" : "التقشير الكيميائي",
       description: language === "en" 
         ? "Reveal brighter, smoother skin with customized peel treatments."
         : "اكشف عن بشرة أكثر إشراقاً ونعومة مع علاجات التقشير المخصصة.",
+      image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
     {
       name: language === "en" ? "Laser Treatments" : "علاجات الليزر",
       description: language === "en" 
         ? "Advanced laser technology for skin resurfacing and rejuvenation."
         : "تقنية الليزر المتقدمة لتجديد سطح البشرة وتجديدها.",
+      image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
     {
       name: language === "en" ? "Acne Treatment" : "علاج حب الشباب",
       description: language === "en" 
         ? "Comprehensive solutions for clear, healthy skin."
         : "حلول شاملة لبشرة صافية وصحية.",
+      image: "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
     {
       name: language === "en" ? "Skin Rejuvenation" : "تجديد البشرة",
       description: language === "en" 
         ? "Restore youthful glow with our advanced rejuvenation protocols."
         : "استعد توهج الشباب مع بروتوكولات التجديد المتقدمة لدينا.",
+      image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    },
+    {
+      name: language === "en" ? "PRP Therapy" : "علاج البلازما",
+      description: language === "en" 
+        ? "Platelet-rich plasma therapy for natural skin healing and hair restoration."
+        : "علاج البلازما الغنية بالصفائح الدموية للشفاء الطبيعي للبشرة واستعادة الشعر.",
+      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
   ];
 
@@ -74,36 +93,21 @@ const Dermatology = () => {
         </div>
       </section>
 
-      {/* Procedures */}
+      {/* Service Cards Grid */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-serif font-bold mb-8">
             {language === "en" ? "Our Treatments" : "علاجاتنا"}
           </h2>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {procedures.map((procedure, index) => (
-              <motion.div
+              <ServiceCard
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="luxury-card p-6"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Check className="w-4 h-4 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground mb-2">
-                      {procedure.name}
-                    </h3>
-                    <p className="text-sm text-foreground/60">
-                      {procedure.description}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
+                title={procedure.name}
+                description={procedure.description}
+                image={procedure.image}
+                videoUrl={procedure.videoUrl}
+              />
             ))}
           </div>
         </div>

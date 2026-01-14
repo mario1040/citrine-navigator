@@ -180,7 +180,7 @@ const RealResults = () => {
   };
 
   return (
-    <section className="py-20 bg-muted/50">
+    <section id="real-results" className="py-20 bg-muted/50 scroll-mt-20">
       <div className="container mx-auto px-4">
         {/* Section Title */}
         <motion.div
@@ -292,6 +292,22 @@ const RealResults = () => {
             ))}
           </motion.div>
         </div>
+
+        {/* CTA Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-12 text-center"
+        >
+          <a
+            href="/contact-us"
+            className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-full hover:scale-105 transition-transform duration-300 shadow-lg shadow-primary/30"
+          >
+            {language === "en" ? "Book Consultation" : "احجز استشارة"}
+          </a>
+        </motion.div>
       </div>
     </section>
   );

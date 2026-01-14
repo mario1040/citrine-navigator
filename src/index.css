@@ -152,3 +152,8 @@
     text-wrap: balance;
   }
 }
+
+/* Smooth scrolling for hash links */
+html {
+  scroll-behavior: smooth;
+}

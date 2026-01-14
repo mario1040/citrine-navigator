@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/context/LanguageContext";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import ServiceCard from "@/components/services/ServiceCard";
 
 const Dental = () => {
   const { language, isRTL, t } = useLanguage();
@@ -13,32 +14,50 @@ const Dental = () => {
     {
       name: language === "en" ? "Dental Implants" : "زراعة الأسنان",
       description: language === "en" 
-        ? "Permanent tooth replacement with natural-looking results."
-        : "استبدال دائم للأسنان بنتائج طبيعية المظهر.",
+        ? "Permanent tooth replacement with natural-looking results using titanium implants."
+        : "استبدال دائم للأسنان بنتائج طبيعية المظهر باستخدام غرسات التيتانيوم.",
+      image: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
     {
       name: language === "en" ? "Veneers" : "القشور",
       description: language === "en" 
-        ? "Transform your smile with custom porcelain veneers."
-        : "حوّل ابتسامتك مع قشور البورسلين المخصصة.",
+        ? "Transform your smile with custom porcelain veneers for a flawless appearance."
+        : "حوّل ابتسامتك مع قشور البورسلين المخصصة للحصول على مظهر مثالي.",
+      image: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
     {
       name: language === "en" ? "Teeth Whitening" : "تبييض الأسنان",
       description: language === "en" 
-        ? "Professional whitening for a brighter, more confident smile."
-        : "تبييض احترافي لابتسامة أكثر إشراقاً وثقة.",
+        ? "Professional whitening treatments for a brighter, more confident smile."
+        : "علاجات تبييض احترافية لابتسامة أكثر إشراقاً وثقة.",
+      image: "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
     {
       name: language === "en" ? "Orthodontics" : "تقويم الأسنان",
       description: language === "en" 
-        ? "Straighten your teeth with modern braces and clear aligners."
+        ? "Straighten your teeth with modern braces and invisible aligners."
         : "قوّم أسنانك مع التقويم الحديث والمصففات الشفافة.",
+      image: "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
     {
       name: language === "en" ? "Root Canal" : "علاج الجذور",
       description: language === "en" 
-        ? "Pain-free root canal therapy with advanced techniques."
-        : "علاج قناة الجذر بدون ألم مع تقنيات متقدمة.",
+        ? "Pain-free root canal therapy with advanced techniques and technology."
+        : "علاج قناة الجذر بدون ألم مع تقنيات وتكنولوجيا متقدمة.",
+      image: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    },
+    {
+      name: language === "en" ? "Dental Crowns" : "تيجان الأسنان",
+      description: language === "en" 
+        ? "Restore damaged teeth with premium quality dental crowns."
+        : "استعد الأسنان التالفة بتيجان أسنان عالية الجودة.",
+      image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&q=80",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
   ];
 
@@ -74,36 +93,21 @@ const Dental = () => {
         </div>
       </section>
 
-      {/* Procedures */}
+      {/* Service Cards Grid */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-serif font-bold mb-8">
             {language === "en" ? "Our Services" : "خدماتنا"}
           </h2>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {procedures.map((procedure, index) => (
-              <motion.div
+              <ServiceCard
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="luxury-card p-6"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Check className="w-4 h-4 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground mb-2">
-                      {procedure.name}
-                    </h3>
-                    <p className="text-sm text-foreground/60">
-                      {procedure.description}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
+                title={procedure.name}
+                description={procedure.description}
+                image={procedure.image}
+                videoUrl={procedure.videoUrl}
+              />
             ))}
           </div>
         </div>
